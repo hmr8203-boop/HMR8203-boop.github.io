@@ -1,997 +1,283 @@
 <!DOCTYPE html>
-<html class="light" lang="ko">
+<html lang="ko" class="dark">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Green Noble Club | VIP Lounge & Dashboard</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Aura Foundation & Intelligence Admin</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
-        }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        body {
-            font-family: 'Hanken Grotesk', sans-serif;
-            min-height: 100vh;
-            background-color: #f8f9fa;
-        }
-        .card-shadow {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-        }
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    "colors": {
-                        "primary": "#006637",
-                        "primary-container": "#008248",
-                        "on-primary-container": "#ddffe2",
-                        "secondary": "#735c00",
-                        "secondary-container": "#fed65b",
-                        "on-secondary-fixed-variant": "#574500",
-                        "background": "#f8f9fa",
-                        "surface": "#f8f9fa",
-                        "surface-container-lowest": "#ffffff",
-                        "surface-container-low": "#f3f4f5",
-                        "surface-container": "#edeeef",
-                        "on-surface": "#191c1d",
-                        "on-surface-variant": "#3e4a40",
-                        "outline-variant": "#bdcabd",
-                        "gold-accent": "#e9c349",
-                        "gold-highlight": "#D4AF37",
-                        "error": "#ba1a1a"
+                    colors: {
+                        "primary": "#f2ca50",
+                        "primary-container": "#d4af37",
+                        "on-primary": "#3c2f00",
+                        "background": "#131313",
+                        "surface": "#131313",
+                        "surface-container": "#201f1f",
+                        "surface-container-high": "#2a2a2a",
+                        "on-surface": "#e5e2e1",
+                        "on-surface-variant": "#d0c5af",
+                        "outline-variant": "#4d4635",
+                        "gold-accent": "#D4AF37"
                     },
-                    "borderRadius": {
-                        "DEFAULT": "0.5rem",
-                        "lg": "1rem",
-                        "xl": "1.5rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "margin-desktop": "64px",
-                        "margin-mobile": "20px",
-                        "gutter": "24px",
-                        "container-max": "1280px"
+                    fontFamily: {
+                        "body": ["manrope", "Inter", "sans-serif"],
+                        "display": ["ebGaramond", "serif"],
                     }
                 }
             }
         }
     </script>
+
+    <style>
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        body { background-color: #131313; -webkit-font-smoothing: antialiased; }
+        .glass-card { background: rgba(26, 26, 26, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(77, 70, 53, 0.3); }
+        .screen { display: none; }
+        .screen.active { display: block; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .admin-theme { background-color: #f9f9f9; color: #1a1c1c; }
+    </style>
 </head>
-<body class="bg-background text-on-surface select-none">
+<body class="text-on-surface font-body">
 
-    <!-- Top Navigation Header -->
-    <header class="fixed top-0 left-0 right-0 z-40 bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/30">
-        <div class="flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop py-4 max-w-container-max mx-auto">
-            <div class="flex items-center gap-3">
-                <!-- Dropdown Profile Switcher -->
-                <div class="relative group">
-                    <button onclick="toggleProfileDropdown()" class="w-10 h-10 rounded-full overflow-hidden border border-primary/20 cursor-pointer focus:outline-none transition-transform hover:scale-105 active:scale-95">
-                        <img id="header-avatar" alt="멤버 프로필 사진" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAYZE1hWu1r9C27H6DjvJi2pxIFjwJMs7gtPlXUdSp2kawPbkMKulNo76w--o6p4eauO-knnhoPI_YSmIoGm4l1FnQol82rD29vI2TgpghiVGy7EWH0h5qjUs4ELv1flBtLX33dNCuhvV6bW1T_QQFmJ4cHNM8hp-gXPO4FcbzEoytK7lgGIGREIFKgY5APcdwteD8uBNnTcKKJ91yOKJOk-n9nsHb7VtU9d5V_F9Ntz8dmu7SXEcegDsf56YUrXYFezFWM4hRMcQs" class="w-full h-full object-cover"/>
-                    </button>
-                    <!-- Switcher Menu -->
-                    <div id="profile-dropdown" class="hidden absolute left-0 mt-2 w-48 bg-surface-container-lowest rounded-xl shadow-xl border border-outline-variant/30 py-2 text-sm z-50">
-                        <div class="px-4 py-2 text-xs text-on-surface-variant font-bold border-b border-outline-variant/10">멤버 전환</div>
-                        <button onclick="switchProfile('juri')" class="w-full text-left px-4 py-3 hover:bg-surface-container flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-primary"></span> 김주리 님 (Tier Card 842)
-                        </button>
-                        <button onclick="switchProfile('jisu')" class="w-full text-left px-4 py-3 hover:bg-surface-container flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-gold-highlight"></span> 김지수 님 (Tier Card 12,450)
-                        </button>
-                    </div>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold text-primary tracking-tight">Green Noble Club</h1>
-                    <p id="header-greeting" class="text-xs text-on-surface-variant hidden md:block">나눔의 가치를 함께 실현하는 동반자</p>
-                </div>
-            </div>
-
-            <!-- Desktop View Links -->
-            <div class="hidden md:flex items-center gap-8 font-semibold text-sm">
-                <button onclick="switchView('dashboard')" id="nav-dash" class="nav-btn text-primary border-b-2 border-primary py-1">대시보드</button>
-                <button onclick="switchView('impact')" id="nav-imp" class="nav-btn text-on-surface-variant hover:text-primary py-1">임팩트</button>
-                <button onclick="switchView('lounge')" id="nav-lng" class="nav-btn text-on-surface-variant hover:text-primary py-1">라운지</button>
-                <button onclick="switchView('admin')" id="nav-adm" class="nav-btn text-on-surface-variant hover:text-primary py-1">관리자</button>
-            </div>
-
-            <!-- Header Utility Actions -->
-            <div class="flex items-center gap-3">
-                <button onclick="toggleNotificationDrawer()" class="relative p-2 rounded-full hover:bg-surface-container-low transition-colors">
+    <!-- [SCREEN 1: User Home - Participation & Story] -->
+    <section id="screen-home" class="screen active pb-32">
+        <header class="w-full sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30">
+            <div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+                <span class="font-display text-2xl text-primary italic">Aura Foundation</span>
+                <div class="flex items-center gap-4">
+                    <button onclick="switchScreen('screen-admin')" class="text-[10px] border border-primary/50 px-2 py-1 rounded text-primary">ADMIN VIEW</button>
                     <span class="material-symbols-outlined text-primary">notifications</span>
-                    <span id="notif-dot" class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
-                </button>
+                    <div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2QsmZO8JO_N6dn6XRZbWw7SHDQCIGmJfjOhbaKL0NI02oTBi1-1vySVCuu0dSAB6oputvsc0cqIlANYyslOFyXoxsxg2HzJTGB4pu0S36z0aStZZKsmeV0KfN4HtckcRp6o8aAkT8jg2eplMiebzB9I_d3_MGSUee9K2cnSqE4Mh8DULj9IsmGiVaEbRyJlAZhmFIq-Kg1q7s56DPlLgvXG0Y5aLstZ8OEBtU-WdUcOWWJW77DJuNy6KAcYx8i0Ixyi6av2M71FI" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-6 pt-8 space-y-12">
+            <!-- Invitation Section -->
+            <div class="space-y-6">
+                <span class="text-[12px] tracking-[0.2em] text-primary font-bold uppercase">INVITATION</span>
+                <h2 class="font-display text-3xl italic">재단 특별 초청 행사 안내</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-surface-container border border-outline-variant/30 rounded-xl p-8 flex flex-col justify-between space-y-6">
+                        <div class="space-y-4">
+                            <h3 class="font-display text-2xl text-white">2024 하이엔드 자선 경매의 밤</h3>
+                            <div class="text-on-surface-variant space-y-2">
+                                <div class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-sm">calendar_today</span> 2024. 12. 15 | 18:30 PM</div>
+                                <div class="flex items-center gap-2 text-sm"><span class="material-symbols-outlined text-sm">location_on</span> 그랜드 하얏트 서울, 프라이빗 룸</div>
+                            </div>
+                        </div>
+                        <div class="inline-flex p-1 bg-black/30 rounded-full w-full">
+                            <button id="btn-rsvp-on" onclick="toggleRSVP(true)" class="flex-1 py-3 rounded-full text-primary bg-primary/10 font-bold">참석</button>
+                            <button id="btn-rsvp-off" onclick="toggleRSVP(false)" class="flex-1 py-3 rounded-full text-on-surface-variant/60">불참</button>
+                        </div>
+                    </div>
+                    <div class="hidden md:block rounded-xl overflow-hidden relative group">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKW_4ejUx2mSE1MH0o8jWXi9bZLZ_Q-ZvBqnOADOXZtaVg_lvtLwMw0ZcWeQ7aLOx3ZrgyswbuGInvL-jHdUkmB4aK_DMB5Ybsj3SHDfwVm9iCYhc5VW4uio1Ob_thmawrEG2tYRHgKi80fJSJ5EUO3rVepRI5b6rP7TTzGz16dnKBPL-yRTm-6cDyeu8a7ZwuEO03LOOokvZprSJE3UIlGQ3Uxt7FlSDWlVijwMWUTDEuvavKUviRukQzHCGjqoCmrqjTOG6S3_c" class="w-full h-full object-cover transition-transform group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6"><span class="bg-primary/20 border border-primary/30 px-3 py-1 rounded-full text-[10px] text-primary">VVIP ONLY</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Child Story Section -->
+            <div class="space-y-6">
+                <div class="flex justify-between items-end">
+                    <h2 class="font-display text-3xl italic">나의 후원 아동 소식</h2>
+                    <button class="text-primary text-sm font-bold">VIEW ALL</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2 relative h-[400px] rounded-xl overflow-hidden cursor-pointer" onclick="openModal()">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfVOx1Kb4zFEGysrwQGfcSfIhEfqtre2HDuZvKmwIMil1nxLqW5dkZkzexsLiycehaUKsSAOxlm3P_CfbbmGAsrVerdwIJnq7IZBH2ZU-6EfnKQt19dqWLZpZymXliJMtt0r8J2pmDlsSR9_kQxktqvbt-1RHYTk1xBhDxkAFtFC61XaQsfGk30n5ucsPg-HeooObtSREhTqLldNK8drNEt-HpzotYKclfJDVgQZ1Jeio-GQm7e2jzK6sPmUNH6iwprIFUBaV6DW8" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent p-8 flex flex-col justify-end">
+                            <h3 class="font-display text-2xl text-primary italic mb-2">"후원자님 덕분에 학교에 도서관이 생겼어요!"</h3>
+                            <p class="text-white/70 text-sm">에티오피아, 아미나 (12세) - 후원 3년차</p>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="bg-surface-container p-6 rounded-xl border border-outline-variant/30">
+                            <div class="w-full h-32 rounded bg-gray-800 mb-4 overflow-hidden">
+                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGBoOyWiJaDVPDfDDBsc9zcHAfeH9ECNFi-P5UhFDoA-nyVjjcssSmTZEYQ_OfevWIgaRkYR5mKE2iYpqka7Bygzfr-hK68-sI7qq_TyoIE1n6nbOoiJFd2ddPDbnkVImEQ-mg8V-5upr6N_Es6C5cnWvMAJZR7YegXKMpjDI1yauE6VHTF6yxAYH3r_hOZSQZ6v1m8o4W4gN5BQBRqH2ZwQpzguHHG3ok4GQd5Cq2ziWBZm7AhZLJiwbfY647nVuSk9UVeSJs9x0" class="w-full h-full object-cover">
+                            </div>
+                            <h4 class="font-bold mb-2">새로운 보금자리와 식수</h4>
+                            <p class="text-xs text-on-surface-variant">마을에 설치된 우물 덕분에 아이들이 더 건강해졌습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </section>
+
+    <!-- [SCREEN 2: Lounge & Chat] -->
+    <section id="screen-lounge" class="screen pb-32">
+        <header class="p-6 border-b border-outline-variant/30 flex justify-between items-center">
+            <h1 class="font-display text-2xl text-primary">Green Noble Lounge</h1>
+            <span class="material-symbols-outlined text-primary">search</span>
+        </header>
+        <div class="p-6 space-y-8 max-w-7xl mx-auto">
+            <div class="flex gap-8 border-b border-outline-variant/20">
+                <button class="pb-4 border-b-2 border-primary text-primary font-bold text-xs tracking-widest">1:1 CHATTING</button>
+                <button class="pb-4 text-on-surface-variant/60 text-xs tracking-widest">SMALL GROUP</button>
+            </div>
+            
+            <div class="space-y-2">
+                <!-- Chat Item -->
+                <div class="flex items-center p-4 gap-4 glass-card rounded-xl border-l-4 border-l-primary">
+                    <div class="w-14 h-14 rounded-full overflow-hidden bg-gray-800">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxJ8MEyPUWNPVZYsmVdCSzsoX8FaqpjHHzI6bq3yB_GtFRpj7q53wsYQBnWmTERXs02wKv37as72YTnRt0Fi86ft_bi8kqz5yNa3iDm0z0KM-LXDTJvw2_N4vM-7t51Gyq1raVQXKp_TC3hmYNzaJVPVJtEnzuR6mS__fpvVSMTWRlcTjR6uMUNQcDQbzXRBR4E6fz0sKrP7sO2VXGpmDZYIp5Fr-myIlnTlZzhUcTJ0rihCxZW04uM2sp38cASjf_LbCsUxkE8sM" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold">Director Sang-woo Kim</span>
+                            <span class="text-[10px] text-on-surface-variant">14:20</span>
+                        </div>
+                        <p class="text-sm text-on-surface-variant truncate">후원금 운용 분기 보고서가 준비되었습니다. 확인 부탁드립니다.</p>
+                    </div>
+                    <div class="w-5 h-5 bg-primary text-on-primary text-[10px] flex items-center justify-center rounded-full font-bold">2</div>
+                </div>
             </div>
         </div>
-    </header>
+    </section>
 
-    <!-- Main Workspace Container -->
-    <main class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop pt-24 pb-32">
-        
-        <!-- SECTION 1: DASHBOARD VIEW (김주리 / 김지수 통합) -->
-        <div id="view-dashboard" class="animate-fade-in space-y-gutter">
-            <!-- Hero Personal Information Card -->
-            <div class="relative rounded-3xl overflow-hidden aspect-[4/5] md:aspect-[16/6] bg-black shadow-xl">
-                <img id="dash-hero-bg" class="absolute inset-0 w-full h-full object-cover opacity-80" alt="프로필 히어로" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwvW0Njd9SWXsnpoMPl190Py4ECjn4NpzL2AjsbIGIObE-whMz7ddZcqsjArnZrfuk4FbWi4vyQPTHD_h1FCMbDbh8qviW79wUNqndm9CMr00JUkclmqrwHIc8otWGuz_WmI05Fv7v6FgiiIwO7okhe5jWBYKC8LOJeyUGn9PMNlw0rgNeeo2HOay0b_7YafiXLfbQTS2Jah2l28oxcCAOWCkUJBnxXNzhlbXmO1X8mmtFA5ocS3VoSh_df3N2zMnljEtw4gXlttE"/>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
-                <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 flex flex-col md:flex-row justify-between md:items-end gap-6">
+    <!-- [SCREEN 3: Admin Dashboard] -->
+    <section id="screen-admin" class="screen admin-theme min-h-screen">
+        <div class="flex h-screen overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-[#1a1c1c] text-white p-8 flex flex-col gap-8">
+                <h2 class="font-display text-2xl text-primary-fixed">Intelligence</h2>
+                <nav class="space-y-4 flex-1">
+                    <div class="flex items-center gap-3 text-primary font-bold"><span class="material-symbols-outlined">dashboard</span> 대시보드</div>
+                    <div class="flex items-center gap-3 text-white/50"><span class="material-symbols-outlined">group</span> 후원자 관리</div>
+                    <div class="flex items-center gap-3 text-white/50"><span class="material-symbols-outlined">settings_suggest</span> 자동화 설정</div>
+                </nav>
+                <button onclick="switchScreen('screen-home')" class="text-xs text-white/30 hover:text-primary transition-colors">EXIT ADMIN VIEW</button>
+            </aside>
+            <!-- Content -->
+            <main class="flex-1 overflow-y-auto p-12 space-y-12">
+                <div class="flex justify-between items-center">
                     <div>
-                        <span class="text-gold-accent font-bold tracking-[0.2em] text-xs uppercase block mb-1">NOBLE CONCIERGE TIER</span>
-                        <h2 id="dash-username" class="text-white text-3xl md:text-5xl font-extrabold leading-tight">환영합니다, 김주리 님</h2>
-                        <p id="dash-join-date" class="text-white/60 text-sm mt-1">2022년부터 함께 길을 밝히는 파트너</p>
+                        <span class="text-[10px] text-primary uppercase tracking-widest font-bold">System Overview</span>
+                        <h1 class="font-display text-4xl text-gray-900 mt-2">SCR-ADMIN-001</h1>
                     </div>
-                    <!-- Core Stats Grid -->
-                    <div class="flex gap-6 border-t border-white/10 md:border-t-0 pt-4 md:pt-0">
-                        <div>
-                            <span class="text-white/50 text-[10px] font-bold uppercase tracking-wider block mb-1">임팩트 지수</span>
-                            <span id="stat-score" class="text-gold-accent font-bold text-3xl md:text-4xl">842</span>
-                        </div>
-                        <div class="w-[1px] bg-white/20 h-10 self-end"></div>
-                        <div>
-                            <span id="stat-sub-label" class="text-white/50 text-[10px] font-bold uppercase tracking-wider block mb-1">희망의 동행</span>
-                            <span id="stat-value" class="text-white font-bold text-3xl md:text-4xl">1.2만</span>
-                        </div>
-                    </div>
+                    <button class="bg-gray-900 text-white px-6 py-2 text-xs font-bold rounded shadow-xl">EXPORT DATA</button>
                 </div>
-            </div>
 
-            <!-- Horizontal Highlight/Notice Panel -->
-            <div class="bg-surface-container-lowest border border-gold-accent/30 rounded-2xl p-5 shadow-sm flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-gold-highlight" style="font-variation-settings: 'FILL' 1;">military_tech</span>
-                    <span id="badge-promo-text" class="text-sm font-semibold text-on-surface">그린노블클럽 노블 멘토 기부 파트너스 그룹 소속</span>
-                </div>
-                <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:translate-x-1 transition-transform">chevron_right</span>
-            </div>
-
-            <!-- Grid Layout: Stories & Activites -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
-                <!-- Left-Center: Lounge Highlight Cards -->
-                <div class="lg:col-span-2 space-y-gutter">
-                    <div class="flex justify-between items-end">
-                        <div>
-                            <h3 class="text-2xl font-bold tracking-tight">주간 전파 뉴스 & 스토리</h3>
-                            <p class="text-sm text-on-surface-variant mt-0.5">우리의 나눔이 직접 만들어가는 생생한 기적</p>
-                        </div>
-                        <button onclick="switchView('impact')" class="text-primary text-sm font-bold hover:underline">전체 보기</button>
+                <div class="grid grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                        <div class="text-[10px] text-gray-400 uppercase mb-4">Total Members</div>
+                        <div class="text-4xl font-display text-gray-900">12,842 <span class="text-xs text-green-500 font-bold ml-2">↑ 4.2%</span></div>
+                        <div class="mt-4 h-1 w-full bg-gray-100 rounded-full overflow-hidden"><div class="h-full bg-primary w-[72%]"></div></div>
                     </div>
-                    <!-- Story Cards Scroll -->
-                    <div class="flex overflow-x-auto gap-gutter hide-scrollbar pb-2">
-                        <!-- Story Card 1 -->
-                        <div class="flex-none w-72 md:w-80 bg-surface-container-lowest rounded-2xl overflow-hidden card-shadow border border-outline-variant/10">
-                            <div class="h-44 relative overflow-hidden">
-                                <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_8fXgS81MFBMgR53Owb0sBxUm9SCX13_nzfpLQCdLN_omaoMFBA71jOdifY3ByREtiuD79zwQ2yXZuFlD9t_KlL_3yC4H--PelgxshoSXr0F9SZUNWBT0hwJ__AwtqYSyoQGMLM99HN2kOHXN0Erz_GY3Lnvz7QTavacuXv2V-7H6Ke1wWLnoVNtgKCkcXivbuSplN1cfTsQGM6K-EvbubPeOt-0k9tNGv2e0H0ao7x7hZyhOtGnkBOEOVwRU-hhVEG6KySi78II" alt="에티오피아"/>
-                            </div>
-                            <div class="p-5">
-                                <span class="text-xs font-bold text-primary tracking-wider uppercase">글로벌 교육 사업</span>
-                                <h4 class="font-bold text-lg mt-1 mb-2">에티오피아 아이들의 내일을 세우다</h4>
-                                <p class="text-xs text-on-surface-variant leading-relaxed">우리의 후원으로 5개 친환경 스마트 학교 인프라 설계가 시작되었습니다.</p>
-                            </div>
-                        </div>
-                        <!-- Story Card 2 -->
-                        <div class="flex-none w-72 md:w-80 bg-surface-container-lowest rounded-2xl overflow-hidden card-shadow border border-outline-variant/10">
-                            <div class="h-44 relative overflow-hidden">
-                                <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOYbsPXCcA_mSkCOiGGfl9wRdeIbIbjbyjtq6UZjF2MszVdwNLxE-HA8SIgW44agRHK_w5RQnfHXliGTktdtyN30HS5nUlyGkp8VKQ_CHqlOY39DmXbLHOR0Qi78DSRVmEMghV_l77MuMplCiBfl4zh8BdAodghBcA2KIUukwGtqT8nss-D3xGM8ULK-AkuRrbZctYNRSS8eePrfPawXLCHJYyw-e7GNfpsnNndjlaigILDPOxyLFCd3XCL-ygb63enj-YVk72l0Q" alt="자립경제"/>
-                            </div>
-                            <div class="p-5">
-                                <span class="text-xs font-bold text-secondary tracking-wider uppercase">지역 경제 모델</span>
-                                <h4 class="font-bold text-lg mt-1 mb-2">지속 가능한 삶과 내일의 자립 디자인</h4>
-                                <p class="text-xs text-on-surface-variant leading-relaxed">수확 원재료 가공 협동조합 모델 구축을 통해 마을 전체가 일어섭니다.</p>
-                            </div>
-                        </div>
-                        <!-- Story Card 3 -->
-                        <div class="flex-none w-72 md:w-80 bg-surface-container-lowest rounded-2xl overflow-hidden card-shadow border border-outline-variant/10">
-                            <div class="h-44 relative overflow-hidden">
-                                <img class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnZ3zcueOJK8q8ireYNoD0RBhr9NGOkMc2ETIkPLCshA4R5qfV3w29ao3ROBpeD94CgQVDo-BGGNvLVeBMEhP53cRJRS5bb5VNbMkaC3lXMoHBYT_qpUJpRFC_ghFPZCcHxE4a-Hdp3RIwBrsItt8F6B4pwjPZTKwtWxcSn7CXn9y3r3PC4_6gST7bFYeDsmrghGYheeW6zAHp50Qim0MCwD5N0vFZMt6QxrU5AoXMLoGPEZ2nJY_A06Fn0_8eeAVKXprIeI0aAiY" alt="환경보호"/>
-                            </div>
-                            <div class="p-5">
-                                <span class="text-xs font-bold text-primary tracking-wider uppercase">수질 정화 이니셔티브</span>
-                                <h4 class="font-bold text-lg mt-1 mb-2">깨끗한 물: 생명의 강 복원 사업</h4>
-                                <p class="text-xs text-on-surface-variant leading-relaxed">지속 가능한 정수 시설 보급을 통해 연간 수인성 질병 발생률을 대폭 축소하였습니다.</p>
-                            </div>
-                        </div>
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                        <div class="text-[10px] text-gray-400 uppercase mb-4">Monthly New Join</div>
+                        <div class="text-4xl font-display text-gray-900">846 <span class="text-xs text-green-500 font-bold ml-2">↑ 12.8%</span></div>
+                    </div>
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                        <div class="text-[10px] text-gray-400 uppercase mb-4">Retention Rate</div>
+                        <div class="text-4xl font-display text-gray-900">94.2%</div>
                     </div>
                 </div>
 
-                <!-- Right: Personalized Activity & History Panel -->
-                <div class="space-y-gutter">
-                    <h3 class="text-2xl font-bold tracking-tight">VIP 멤버스 활동 로그</h3>
-                    <div id="activity-log-container" class="bg-surface-container-lowest p-6 rounded-2xl card-shadow border border-outline-variant/10 space-y-4">
-                        <!-- Dynamic Activity Feed Content Generated via JS based on Selected Profile -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 2: IMPACT REPORT VIEW -->
-        <div id="view-impact" class="hidden animate-fade-in space-y-gutter">
-            <!-- Visual Summary of Accomplishments Banner -->
-            <div class="bg-primary text-on-primary rounded-3xl p-8 md:p-12 relative overflow-hidden shadow-xl">
-                <div class="absolute -top-12 -right-12 w-64 h-64 bg-primary-container/30 rounded-full blur-3xl"></div>
-                <div class="relative z-10 max-w-3xl">
-                    <span class="text-gold-accent font-bold tracking-widest text-xs uppercase">IMPACT OVERVIEW</span>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mt-2 mb-6 leading-snug">나눔을 가치 있는 미래의 변화로 증명합니다</h2>
-                    <p class="text-white/80 text-sm md:text-base leading-relaxed mb-8">
-                        그린노블 클럽의 전략 후원은 단순한 기부를 넘어 수혜 국가의 완벽한 사회경제적 자립을 유도합니다. 검증된 현장 데이터와 회계 시스템을 기반으로 철저하고 영속적인 가치를 창조합니다.
-                    </p>
-                    <button onclick="downloadReport()" class="flex items-center gap-2 bg-gold-accent hover:bg-gold-highlight text-primary-fixed-dim font-bold px-6 py-4 rounded-xl text-sm transition-transform active:scale-95 shadow-md">
-                        <span class="material-symbols-outlined text-[18px]">download_for_offline</span>
-                        상반기 통합 임팩트 리포트 다운로드 (PDF)
-                    </button>
-                </div>
-            </div>
-
-            <!-- Dynamic Goals Progress Bars Panel -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-gutter">
-                <div class="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant/20 card-shadow space-y-6">
-                    <h3 class="text-xl font-bold border-b border-outline-variant/10 pb-4">지속 가능한 중점 후원 분석</h3>
+                <div class="bg-white p-8 rounded-xl border border-gray-100">
+                    <h3 class="font-display text-xl mb-8">모금 자동화 설정</h3>
                     <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between text-xs font-semibold mb-2 text-on-surface-variant">
-                                <span>생물 다원성 및 환경 보존 기금</span>
-                                <span class="font-bold text-primary">85% 달성 (₩42,000,000)</span>
-                            </div>
-                            <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
-                                <div class="bg-primary h-full rounded-full transition-all duration-1000" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-xs font-semibold mb-2 text-on-surface-variant">
-                                <span>글로벌 빈곤가정 긴급구호사업</span>
-                                <span class="font-bold text-primary">60% 달성 (₩18,500,000)</span>
-                            </div>
-                            <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
-                                <div class="bg-primary h-full rounded-full transition-all duration-1000" style="width: 60%"></div>
-                            </div>
+                        <div class="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 rounded">
+                            <div class="flex-1 text-sm"><b>만약</b> [유입경로: 지인추천] 이라면 → <b>수행</b> [감사 메시지 발송]</div>
+                            <div class="w-10 h-5 bg-primary/20 rounded-full relative"><div class="absolute right-0.5 top-0.5 w-4 h-4 bg-primary rounded-full"></div></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Event Cards Column -->
-                <div class="space-y-gutter">
-                    <h3 class="text-2xl font-bold tracking-tight mb-2">라운지 익스클루시브 멤버스 이벤트</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-                        <div class="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-md group">
-                            <img class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-750" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXSXqOyvH4EjrpvpM6J3RX756SlCE0ibt3iVgOntC-Jd7GHA1iKWGtX_x1Rr2hiFbQrhf050rIZhHemguPkQr2HkDXEhkNISMJbcC11oqWlRlvFQHo57FFmljO5fsP2TN4SEmNkaFeKj62FKjQs8bMLk8YGoZwelZ29yy6nYyC0COWUtfNK4gOlw8V5-lDD73QLWYAZJv4paTGccGhghzwqxZissgivRcIc_yu4Usa0S9JxrZpRPJha_idHj7FpzlFhGnkfSqecoU" alt="윈터갈라"/>
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 p-5">
-                                <span class="bg-gold-highlight text-white text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-full uppercase">예정된 이벤트</span>
-                                <h4 class="text-white font-bold text-lg mt-2">연례 윈터 갈라 디너</h4>
-                                <p class="text-white/60 text-xs mt-1">2026. 12. 12 | 서울 하얏트 호텔</p>
-                            </div>
-                        </div>
-                        <div class="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-md group">
-                            <img class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-750" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBTy_0uVE-LCaR8toWnjJrFGT-e4zJUGdyKJmSxJ83TEnsf6wptUwCCQMAEqB2xj1LSEYne_e-Yn817-Yxdn_0WrB_t38e3104YyyE2H0xFC7qTe1AQ6aHCa-w8mSlUKgQ-Q9L64fus5YJ7NJylTjqkseS0sUG_MOQug204Ozdh8mLQOVGYu6fc4w8s0KJyHZVR3JuH7PQvdnj4sYvcI9FKxKnAvUYxFQJ32Dstgx9MZABEWkYYL135ouWyGh8MW1rMfObbKxwQ5B8" alt="글로벌서밋"/>
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"></div>
-                            <div id="summit-event-container" class="absolute bottom-0 left-0 p-5 w-full flex justify-between items-end">
-                                <div>
-                                    <span class="bg-white/20 backdrop-blur-md text-white text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-full uppercase">VIP 세미나</span>
-                                    <h4 class="text-white font-bold text-lg mt-2">노블 리더십 서밋 2026</h4>
-                                    <p class="text-white/60 text-xs mt-1">2026. 10. 05 | 그랜드 엠버서더</p>
-                                </div>
-                                <button onclick="joinSummitWaitlist()" class="bg-gold-highlight text-primary font-bold text-xs px-3 py-2 rounded-lg hover:bg-gold-accent">참가 대기</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </main>
         </div>
+    </section>
 
-        <!-- SECTION 3: VIP LOUNGE VIEW -->
-        <div id="view-lounge" class="hidden animate-fade-in space-y-gutter">
-            <!-- Hero Header Title -->
-            <div class="text-center py-6">
-                <span class="px-3 py-1 bg-secondary-container text-on-secondary-fixed-variant text-[11px] font-extrabold rounded-full uppercase tracking-widest">ELITE CONCIERGE ACCESS</span>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-on-background mt-3">글로벌 노블 소셜 허브</h2>
-                <p class="text-sm text-on-surface-variant mt-2 max-w-xl mx-auto">사회적 성취와 변화를 주도하는 최고의 리더십 파트너들이 한곳에 모여 새로운 패러다임을 설계합니다.</p>
-            </div>
-
-            <!-- Content Split Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
-                <!-- Forums & Active Chats (8 Columns) -->
-                <div class="lg:col-span-8 space-y-gutter">
-                    <h3 class="text-2xl font-bold tracking-tight">라운지 활성 포럼</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-                        <!-- Forum Card 1 -->
-                        <div onclick="openChat('Reforestation')" class="bg-surface-container-lowest p-6 rounded-2xl card-shadow border border-outline-variant/10 hover:border-primary/40 hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-start mb-6">
-                                    <div class="flex -space-x-2">
-                                        <div class="w-9 h-9 rounded-full bg-primary/20 border-2 border-white flex items-center justify-center font-bold text-primary text-xs">A</div>
-                                        <div class="w-9 h-9 rounded-full bg-secondary/20 border-2 border-white flex items-center justify-center font-bold text-secondary text-xs">B</div>
-                                        <div class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center text-[10px] font-bold border-2 border-surface-container-lowest">+14</div>
-                                    </div>
-                                    <span class="text-[9px] font-bold text-primary bg-primary/5 px-2 py-1 rounded border border-primary/20 uppercase tracking-widest">Active</span>
-                                </div>
-                                <h4 class="text-xl font-bold text-on-surface mb-2">아마존 생태 복원 이니셔티브</h4>
-                                <p class="text-xs text-on-surface-variant leading-relaxed mb-6">브라질 복원 지킴이들과의 4분기 스마트 재해 예방 및 산림 가치 구축 논의.</p>
-                            </div>
-                            <div class="flex items-center gap-2 text-primary font-bold text-xs">
-                                <span class="material-symbols-outlined text-[16px]">forum</span>
-                                <span>24개의 새로운 토론 메시지</span>
-                            </div>
-                        </div>
-
-                        <!-- Forum Card 2 -->
-                        <div onclick="openChat('Urban')" class="bg-surface-container-lowest p-6 rounded-2xl card-shadow border border-outline-variant/10 hover:border-primary/40 hover:-translate-y-1 transition-all cursor-pointer flex flex-col justify-between">
-                            <div>
-                                <div class="flex justify-between items-start mb-6">
-                                    <div class="flex -space-x-2">
-                                        <div class="w-9 h-9 rounded-full bg-secondary-container text-on-secondary-fixed-variant flex items-center justify-center font-bold text-xs border-2 border-surface-container-lowest">N</div>
-                                        <div class="w-9 h-9 rounded-full bg-surface-container text-on-surface-variant flex items-center justify-center text-[10px] font-bold border-2 border-surface-container-lowest">+8</div>
-                                    </div>
-                                    <span class="text-[9px] font-bold text-on-surface-variant/60 uppercase tracking-widest">2시간 전</span>
-                                </div>
-                                <h4 class="text-xl font-bold text-on-surface mb-2">지속 가능한 컴팩트 도시 설계</h4>
-                                <p class="text-xs text-on-surface-variant leading-relaxed mb-6">친환경 전기 교통수단 인프라 통합 구축을 위한 북유럽 모듈 시나리오 분석.</p>
-                            </div>
-                            <div class="flex items-center gap-2 text-on-surface-variant font-medium text-xs">
-                                <span class="material-symbols-outlined text-[16px]">forum</span>
-                                <span>전체 메시지 확인 완료</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Direct Messages / Concierge Actions -->
-                    <div class="bg-surface-container-low p-6 rounded-3xl space-y-4 border border-outline-variant/10">
-                        <h4 class="text-lg font-bold">컨시어지 데스크 & 커넥션</h4>
-                        <div onclick="openConciergeBooking()" class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl border border-outline-variant/10 card-shadow hover:bg-surface-bright transition-all cursor-pointer">
-                            <div class="flex items-center gap-4">
-                                <div class="relative w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-primary text-2xl">support_agent</span>
-                                    <span class="absolute bottom-0 right-0 w-3 h-3 bg-primary border-2 border-surface-container-lowest rounded-full"></span>
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm">프라이빗 클럽 컨시어지</p>
-                                    <p class="text-xs text-primary font-medium">"금요일 갈라 디너 및 좌석 지정 예약이 정상 처리되었습니다."</p>
-                                </div>
-                            </div>
-                            <span class="text-[10px] font-bold text-on-surface-variant tracking-wider">10:24 AM</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Column Right Cards (4 Columns) -->
-                <div class="lg:col-span-4 space-y-gutter">
-                    <!-- CTA: Request 1:1 Introduction Match -->
-                    <div class="bg-primary text-on-primary p-6 rounded-3xl shadow-xl relative overflow-hidden group">
-                        <div class="relative z-10">
-                            <h3 class="text-xl font-bold mb-2 text-white">커뮤니티 1:1 소개 매칭</h3>
-                            <p class="text-xs leading-relaxed text-white/80 mb-6">파트너십 디렉터가 회원의 자선 미션에 가장 완벽히 부합하는 엘리트 회원과의 1:1 인카운터를 큐레이팅합니다.</p>
-                            <button onclick="openIntroModal()" class="w-full py-4 bg-secondary-container text-on-secondary-fixed-variant font-bold rounded-xl hover:bg-gold-accent transition-colors text-xs uppercase tracking-widest shadow-lg">소개 일정 매칭 요청</button>
-                        </div>
-                        <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/5 rounded-full blur-3xl"></div>
-                    </div>
-
-                    <!-- Unique Card: Noble Membership Status Details -->
-                    <div class="bg-surface-container-low p-6 rounded-3xl border border-outline-variant/20 flex flex-col items-center text-center card-shadow">
-                        <div class="w-16 h-16 bg-gradient-to-br from-gold-accent to-gold-highlight text-white rounded-full flex items-center justify-center mb-4 shadow-md border-2 border-surface-container-lowest">
-                            <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">military_tech</span>
-                        </div>
-                        <h4 class="text-lg font-bold text-on-surface">김주리 파트너 기부 레코드</h4>
-                        <p class="text-xs text-on-surface-variant font-medium mb-6">Lounge Tier: Priority Elite Member</p>
-                        <div class="w-full space-y-3 pt-4 border-t border-outline-variant/20 text-xs">
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">총 후원 실적</span>
-                                <span class="font-extrabold text-primary text-base">₩1,500,000,000</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-wider">라운지 인가 레벨</span>
-                                <span class="font-bold text-primary bg-primary/5 px-2 py-0.5 rounded uppercase text-[10px]">프라이어리티 엘리트</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 4: ADMIN / STATISTICS VIEW -->
-        <div id="view-admin" class="hidden animate-fade-in space-y-gutter">
-            <!-- Header section inside wrapper -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-4 border-b border-outline-variant/10">
-                <div>
-                    <span class="text-secondary font-bold text-xs uppercase tracking-widest">임원진 요약 통계</span>
-                    <h2 class="text-3xl font-extrabold text-on-background mt-1">그린노블 관리 포털</h2>
-                </div>
-                <!-- Action Buttons to Export/Download files -->
-                <div class="flex gap-3">
-                    <button onclick="showAdminNotification('Excel 내보내기가 완료되었습니다.')" class="flex items-center gap-2 px-4 py-2.5 bg-white border border-outline-variant/60 rounded-xl text-on-surface-variant text-xs font-bold hover:bg-surface-container-low transition-all">
-                        <span class="material-symbols-outlined text-[16px]">download</span> 엑셀 내보내기
-                    </button>
-                    <button onclick="showAdminNotification('PDF 리포트 생성이 완료되었습니다.')" class="flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-xl text-xs font-bold hover:opacity-90 transition-all active:scale-95 shadow-sm">
-                        <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span> PDF 요약 다운로드
-                    </button>
-                </div>
-            </div>
-
-            <!-- Top Indicator Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
-                <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/30 card-shadow flex justify-between items-center">
-                    <div>
-                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">클럽 총 누적 후원자 수</span>
-                        <p class="text-4xl font-extrabold text-primary mt-1">12,842명</p>
-                    </div>
-                    <span class="bg-primary/5 text-primary text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[14px]">trending_up</span> +8.4%
-                    </span>
-                </div>
-                <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/30 card-shadow flex justify-between items-center">
-                    <div>
-                        <span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">이달의 신규 노블 회원</span>
-                        <p class="text-4xl font-extrabold text-secondary mt-1">415명</p>
-                    </div>
-                    <span class="bg-secondary/5 text-secondary text-xs font-bold px-3 py-1.5 rounded-full">이번 달 기준</span>
-                </div>
-            </div>
-
-            <!-- Grid: SVG Charts and Progress Tracks -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
-                <!-- SVG Interactive Donut Card -->
-                <div class="bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/30 card-shadow">
-                    <h4 class="font-bold text-lg mb-6 text-on-surface">회원 유입 채널 분석</h4>
-                    <div class="relative w-40 h-40 mx-auto mb-6">
-                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
-                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#e1e3e4" stroke-width="4.5"></circle>
-                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#006637" stroke-width="4.5" stroke-dasharray="45 100" stroke-dashoffset="0"></circle>
-                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#e9c349" stroke-width="4.5" stroke-dasharray="25 100" stroke-dashoffset="-45"></circle>
-                            <circle cx="18" cy="18" r="15.915" fill="none" stroke="#727171" stroke-width="4.5" stroke-dasharray="30 100" stroke-dashoffset="-70"></circle>
-                        </svg>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <span class="text-2xl font-extrabold text-primary">45%</span>
-                            <span class="text-[10px] font-bold text-on-surface-variant">지인 소개 유입</span>
-                        </div>
-                    </div>
-                    <!-- Chart Legend Indicators -->
-                    <ul class="space-y-2 text-xs font-semibold">
-                        <li class="flex items-center justify-between"><span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-primary"></span>지인 추천 그룹</span><span class="font-bold">45%</span></li>
-                        <li class="flex items-center justify-between"><span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-gold-accent"></span>디지털 파트너쉽</span><span class="font-bold">25%</span></li>
-                        <li class="flex items-center justify-between"><span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-gray-500"></span>자선 갈라 이벤트</span><span class="font-bold">30%</span></li>
-                    </ul>
-                </div>
-
-                <!-- Custom Goals Progress Card -->
-                <div class="lg:col-span-2 bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/30 card-shadow space-y-4">
-                    <h4 class="font-bold text-lg mb-2">클럽 후원 캠페인 목표 달성 현황</h4>
-                    <div class="space-y-4 text-xs font-semibold">
-                        <div>
-                            <div class="flex justify-between mb-1 text-on-surface-variant"><span>산림 자원 생태계 보존 기금</span><span class="font-bold">₩12억 / ₩15억 (80% 달성)</span></div>
-                            <div class="w-full bg-surface-container h-6 rounded-lg overflow-hidden flex items-center px-4 text-[10px] text-white bg-primary transition-all duration-1000" style="width: 80%">80% 달성</div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-1 text-on-surface-variant"><span>글로벌 식수 및 위생 정화 인프라</span><span class="font-bold">₩8.4억 / ₩10억 (84% 달성)</span></div>
-                            <div class="w-full bg-surface-container h-6 rounded-lg overflow-hidden flex items-center px-4 text-[10px] text-white bg-primary transition-all duration-1000" style="width: 84%">84% 달성</div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between mb-1 text-on-surface-variant"><span>미래 세대 신재생에너지 교육 센터 구축</span><span class="font-bold">₩21억 / ₩20억 (105% 목표 초과)</span></div>
-                            <div class="w-full bg-surface-container h-6 rounded-lg overflow-hidden flex items-center px-4 text-[10px] text-on-secondary-fixed-variant bg-gold-accent" style="width: 100%">105% 초과 달성</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Priority Contacts Table Card (Fully Interactive) -->
-            <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 card-shadow overflow-hidden">
-                <div class="p-6 border-b border-outline-variant/10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <h4 class="font-bold text-lg">우선 지원 관리 대상자 목록</h4>
-                    <!-- Interactive Search Box -->
-                    <div class="relative max-w-xs">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
-                        </span>
-                        <input id="admin-search-input" onkeyup="filterAdminTable()" type="text" placeholder="기부자 이름 또는 등급 검색..." class="w-full text-xs font-semibold pl-10 pr-4 py-2 border border-outline-variant/60 rounded-xl focus:border-primary focus:ring-0 focus:outline-none"/>
-                    </div>
-                </div>
-                <!-- Dynamic Responsive Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-surface-container-low font-bold text-on-surface-variant">
-                            <tr>
-                                <th class="p-4">기부 파트너 명</th>
-                                <th class="p-4">멤버십 등급</th>
-                                <th class="p-4">누적 후원 액수</th>
-                                <th class="p-4">모니터링 단계</th>
-                                <th class="p-4 text-right">관리 작업</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-table-body" class="divide-y divide-outline-variant/10 font-medium">
-                            <!-- Dynamic Table Rows Rendered via JS -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Bottom Navigation Bar (Mobile Devices Only) -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 flex justify-around items-center px-4 py-3 bg-surface-container-lowest/95 backdrop-blur-md border-t border-outline-variant/30 shadow-lg">
-        <button onclick="switchView('dashboard')" id="mobile-nav-dash" class="flex flex-col items-center justify-center gap-1 text-primary">
-            <span class="material-symbols-outlined text-[22px]">dashboard</span>
-            <span class="text-[9px] font-bold">대시보드</span>
+    <!-- Bottom Navigation (User View Only) -->
+    <nav id="user-nav" class="fixed bottom-0 w-full z-50 bg-surface-container-low border-t border-outline-variant/20 h-20 flex justify-around items-center px-4 pb-safe">
+        <button onclick="switchScreen('screen-home')" class="flex flex-col items-center gap-1 text-primary">
+            <span class="material-symbols-outlined">home</span>
+            <span class="text-[10px] uppercase font-bold tracking-tighter">Home</span>
         </button>
-        <button onclick="switchView('impact')" id="mobile-nav-imp" class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary">
-            <span class="material-symbols-outlined text-[22px]">eco</span>
-            <span class="text-[9px] font-bold">임팩트</span>
+        <button onclick="switchScreen('screen-lounge')" class="flex flex-col items-center gap-1 text-on-surface-variant/60">
+            <span class="material-symbols-outlined">nightlife</span>
+            <span class="text-[10px] uppercase font-bold tracking-tighter">Lounge</span>
         </button>
-        <button onclick="switchView('lounge')" id="mobile-nav-lng" class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary">
-            <span class="material-symbols-outlined text-[22px]">forum</span>
-            <span class="text-[9px] font-bold">라운지</span>
+        <button class="flex flex-col items-center gap-1 text-on-surface-variant/60">
+            <span class="material-symbols-outlined">volunteer_activism</span>
+            <span class="text-[10px] uppercase font-bold tracking-tighter">Activity</span>
         </button>
-        <button onclick="switchView('admin')" id="mobile-nav-adm" class="flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary">
-            <span class="material-symbols-outlined text-[22px]">admin_panel_settings</span>
-            <span class="text-[9px] font-bold">관리</span>
+        <button class="flex flex-col items-center gap-1 text-on-surface-variant/60">
+            <span class="material-symbols-outlined">person</span>
+            <span class="text-[10px] uppercase font-bold tracking-tighter">My</span>
         </button>
     </nav>
 
-    <!-- Floating Action Button (FAB - Contextual) -->
-    <button onclick="handleFabClick()" class="fixed bottom-24 right-margin-mobile md:bottom-12 md:right-margin-desktop bg-primary text-on-primary w-14 h-14 rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center border-2 border-white/20 z-30">
-        <span id="fab-icon" class="material-symbols-outlined text-[28px]">add_comment</span>
-    </button>
-
-    <!-- ================= MODALS & POPUPS ================= -->
-
-    <!-- Interactive Chat Dialog Modal -->
-    <div id="chat-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-        <div class="bg-surface-container-lowest w-full max-w-lg rounded-2xl shadow-2xl flex flex-col h-[500px]">
-            <div class="p-4 border-b border-outline-variant/20 flex justify-between items-center bg-primary text-on-primary rounded-t-2xl">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined">forum</span>
-                    <div>
-                        <h4 id="chat-title" class="font-bold text-sm text-white">포럼 라이브 채팅</h4>
-                        <p class="text-[10px] text-white/80">Active Lounge Connection</p>
-                    </div>
-                </div>
-                <button onclick="closeChat()" class="text-white hover:text-gold-accent">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
+    <!-- Modal: Thank you -->
+    <div id="modal-thankyou" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 opacity-0 pointer-events-none transition-opacity duration-500">
+        <div class="bg-surface-container-high border border-primary/20 rounded-2xl p-10 max-w-md w-full text-center space-y-6 transform scale-95 transition-all">
+            <div class="inline-block p-4 bg-primary/10 rounded-full mb-2">
+                <span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">favorite</span>
             </div>
-            <!-- Chat Logs Panel -->
-            <div id="chat-logs" class="flex-1 p-4 overflow-y-auto space-y-3 bg-surface-container-low text-xs">
-                <!-- Logs rendered via JS -->
-            </div>
-            <!-- Input Message Area -->
-            <form onsubmit="sendChatMessage(event)" class="p-3 border-t border-outline-variant/20 flex gap-2">
-                <input id="chat-input" type="text" placeholder="메시지를 입력해 주세요..." class="flex-1 text-xs border border-outline-variant/60 rounded-xl px-4 py-2.5 focus:border-primary focus:ring-0 focus:outline-none" required/>
-                <button type="submit" class="bg-primary text-on-primary px-4 rounded-xl font-bold text-xs hover:bg-primary-container">전송</button>
-            </form>
+            <h3 class="font-display text-2xl italic">"항상 고맙습니다, 후원자님"</h3>
+            <p class="text-on-surface-variant text-sm">아미나가 직접 쓴 감사 편지가 배송 중입니다.</p>
+            <button onclick="closeModal()" class="w-full py-4 bg-primary text-on-primary font-bold rounded-xl shadow-lg">메시지 닫기</button>
         </div>
     </div>
 
-    <!-- 1:1 Intro Scheduling Modal -->
-    <div id="intro-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-        <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl p-6 border border-gold-accent/30">
-            <div class="flex justify-between items-center mb-6">
-                <h4 class="text-xl font-bold flex items-center gap-2">
-                    <span class="material-symbols-outlined text-gold-highlight">military_tech</span> 소셜 인카운터 예약
-                </h4>
-                <button onclick="closeIntroModal()" class="text-on-surface-variant hover:text-on-surface">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form onsubmit="submitIntroRequest(event)" class="space-y-4 text-xs font-semibold">
-                <div>
-                    <label class="block text-on-surface-variant mb-1.5">선호하시는 매칭 도메인</label>
-                    <select class="w-full border border-outline-variant rounded-xl p-2.5 text-xs font-medium focus:ring-0" required>
-                        <option>그린 아동 복지 및 환경 교육 연계</option>
-                        <option>글로벌 친환경 인프라 & 기부 전략</option>
-                        <option>프라이어리티 파트너스 자선 기금 조성</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-on-surface-variant mb-1.5">만남 선호 장소</label>
-                    <select class="w-full border border-outline-variant rounded-xl p-2.5 text-xs font-medium focus:ring-0" required>
-                        <option>그린노블 프라이빗 멤버스 라운지 (서울)</option>
-                        <option>VIP 유선 커넥션 및 어드바이저 중재 화상 미팅</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-on-surface-variant mb-1.5">파트너십 미팅 희망 일자</label>
-                    <input type="date" class="w-full border border-outline-variant rounded-xl p-2.5 text-xs focus:ring-0" required/>
-                </div>
-                <button type="submit" class="w-full py-3 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl mt-2 transition-transform active:scale-95 text-xs uppercase tracking-widest">파트너십 인터뷰 예약 완료</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Admin: Add Donor Modal -->
-    <div id="admin-add-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-        <div class="bg-surface-container-lowest w-full max-w-md rounded-2xl shadow-2xl p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h4 class="text-lg font-bold">신규 우선 관리 대상자 추가</h4>
-                <button onclick="closeAdminAddModal()" class="text-on-surface-variant hover:text-on-surface">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-            </div>
-            <form onsubmit="submitNewDonor(event)" class="space-y-4 text-xs font-semibold">
-                <div>
-                    <label class="block text-on-surface-variant mb-1.5">기부자 성명</label>
-                    <input id="donor-name" type="text" placeholder="성명을 입력하세요" class="w-full border border-outline-variant rounded-xl p-2.5 text-xs focus:ring-0" required/>
-                </div>
-                <div>
-                    <label class="block text-on-surface-variant mb-1.5">이메일 주소</label>
-                    <input id="donor-email" type="email" placeholder="email@address.com" class="w-full border border-outline-variant rounded-xl p-2.5 text-xs focus:ring-0" required/>
-                </div>
-                <div>
-                    <label class="block text-on-surface-variant mb-1.5">클럽 멤버 등급</label>
-                    <select id="donor-tier" class="w-full border border-outline-variant rounded-xl p-2.5 text-xs font-medium focus:ring-0">
-                        <option value="노블 엘리트">노블 엘리트</option>
-                        <option value="노블 플러스">노블 플러스</option>
-                        <option value="그린 후원자">그린 후원자</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-on-surface-variant mb-1.5">누적 약정 후원액</label>
-                    <input id="donor-amount" type="number" placeholder="숫자만 입력해 주세요 (원 단위)" class="w-full border border-outline-variant rounded-xl p-2.5 text-xs focus:ring-0" required/>
-                </div>
-                <button type="submit" class="w-full py-3 bg-primary text-on-primary font-bold rounded-xl mt-2 transition-transform active:scale-95 text-xs">안전하게 저장 및 데이터 연동</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Notification Slide Drawer -->
-    <div id="notif-drawer" class="hidden fixed inset-y-0 right-0 z-50 w-80 bg-surface-container-lowest shadow-2xl border-l border-outline-variant/30 flex flex-col p-6 animate-fade-in">
-        <div class="flex justify-between items-center mb-6">
-            <h4 class="font-bold text-lg text-primary">클럽 안내 데스크</h4>
-            <button onclick="toggleNotificationDrawer()" class="text-on-surface-variant hover:text-on-surface">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-        </div>
-        <div class="flex-1 space-y-4 overflow-y-auto text-xs font-semibold">
-            <div class="p-3 bg-surface-container rounded-xl border-l-4 border-gold-highlight">
-                <span class="text-[10px] text-on-surface-variant font-bold">라운지 소식 | 방금 전</span>
-                <p class="mt-1">김주리 파트너 기부 이력이 원활하게 갱신되었습니다.</p>
-            </div>
-            <div class="p-3 bg-surface-container rounded-xl border-l-4 border-primary">
-                <span class="text-[10px] text-on-surface-variant font-bold">파트너십 | 2시간 전</span>
-                <p class="mt-1">"금요일 프라이빗 디너 좌석 컨시어지 배정이 확정되었습니다."</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- User Action Feedback Toast -->
-    <div id="toast-message" class="hidden fixed bottom-12 left-1/2 -translate-x-1/2 z-50 bg-inverse-surface text-inverse-on-surface text-xs font-bold px-6 py-3.5 rounded-xl shadow-xl transition-all duration-300">
-        시스템 정상 처리 완료
-    </div>
-
-    <!-- ================= JAVASCRIPT LOGIC ================= -->
     <script>
-        // High-Fidelity Shared Multi-State Storage
-        const state = {
-            currentView: 'dashboard',
-            currentProfile: 'juri', // 'juri' (김주리) or 'jisu' (김지수)
-            activeChatTopic: 'Reforestation',
-            adminUsers: [
-                { name: 'Kim Leon', email: 'leon.k@membership.club', tier: '노블 엘리트', amount: 125400000, status: '안정', message: '발송 완료' },
-                { name: '박지민', email: 'jimin.p@tech.co.kr', tier: '노블 플러스', amount: 98000000, status: '후속 관리', message: '대기 중' },
-                { name: 'Sarah Connor', email: 's.connor@eco.org', tier: '그린 후원자', amount: 240000000, status: '긴급', message: '비활성화' }
-            ],
-            chatData: {
-                Reforestation: [
-                    { sender: '어드바이저', msg: '김주리 님, 아마존 브라질 수자원 재조림 프로젝트 4분기 회계 감사서가 업로드되었습니다.', time: '10:14 AM' },
-                    { sender: '이재현 (Elite)', msg: '이번 위성 모니터링 시스템 연계 방안이 확실히 효과적일 것 같군요.', time: '10:20 AM' }
-                ],
-                Urban: [
-                    { sender: '어드바이저', msg: '스웨덴 웁살라 주거 모빌리티 모델 설계 초안이 배포되었습니다.', time: '09:00 AM' },
-                    { sender: 'Sarah Connor', msg: '대중교통 완전 전동화 및 15분 도시 결합 방식을 면밀히 타진해 보아야 합니다.', time: '09:12 AM' }
-                ]
-            }
-        };
-
-        // Standard Dynamic Activity Data Sets
-        const profilesData = {
-            juri: {
-                avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAYZE1hWu1r9C27H6DjvJi2pxIFjwJMs7gtPlXUdSp2kawPbkMKulNo76w--o6p4eauO-knnhoPI_YSmIoGm4l1FnQol82rD29vI2TgpghiVGy7EWH0h5qjUs4ELv1flBtLX33dNCuhvV6bW1T_QQFmJ4cHNM8hp-gXPO4FcbzEoytK7lgGIGREIFKgY5APcdwteD8uBNnTcKKJ91yOKJOk-n9nsHb7VtU9d5V_F9Ntz8dmu7SXEcegDsf56YUrXYFezFWM4hRMcQs',
-                name: '김주리 님',
-                tag: '노블 파트너',
-                score: '842',
-                subVal: '1.2만',
-                subLabel: '희망의 기적 동행',
-                joinDate: '2022년 10월부터 자선 가치를 세우는 동반자',
-                promo: '그린노블클럽 노블 멘토 기부 파트너스 그룹 소속',
-                activities: [
-                    { type: '환경', desc: '아마존 산림 재조림 매칭 기금 ₩4,200,000 전달', meta: '2026. 05. 14' },
-                    { type: '의료', desc: '기후 난민 아동 영양 위생 백신 500세트 지원 배정', meta: '2026. 04. 28' }
-                ]
-            },
-            jisu: {
-                avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBVUK53XNlyxt8B-7pewFdjgWzOwU6z6NqeZ3VV4RZ5re2f1_JDBYl6FBL58s58aYluuopPbrjFUUL_e3lp1Icjk3tKfLXc_zdmWqmBTme6-cjE4_YCHCZIPxP1OOok7EyJB398bQ0GyIn4rCuIgAXFZTsjyuL01w3UG-4xPtY3zBcjv65PbUcunk6_1OH6kaxE0epdKW1s3aaZmJ0UaYKW0ITsCY4kT-q6yYWL8Ivr9uAt91M1PmhNFBFbAM1OoiXU2USJ_FZ7oBI',
-                name: '김지수 님',
-                tag: '엘리트 기부자',
-                score: '12,450',
-                subVal: '842일',
-                subLabel: '누적 기부 영속 일수',
-                joinDate: '2022년 3월 가입 | 나눔의 깊이를 실현하는 파트너',
-                promo: '초록우산 어린이재단 협력 인재육성사업 펠로우십 연계',
-                activities: [
-                    { type: '교육', desc: '교육 지원 연간 약정 정기 후원금 ₩1,200,000 납부', meta: '2026. 05. 24' },
-                    { type: '라운지', desc: '동년 갈라 디너 자선 리셉션 가회 1열 예약 승인', meta: '2026. 05. 10' }
-                ]
-            }
-        };
-
-        // Render Active Views Logic (Single Page Control)
-        function switchView(viewName) {
-            state.currentView = viewName;
+        function switchScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
             
-            // Hide all View Segments
-            ['dashboard', 'impact', 'lounge', 'admin'].forEach(v => {
-                document.getElementById(`view-${v}`).classList.add('hidden');
-            });
-            // Reveal Requested View
-            document.getElementById(`view-${viewName}`).classList.remove('hidden');
-
-            // Reset Tab Bar CSS classes (Desktop)
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.className = "nav-btn text-on-surface-variant hover:text-primary py-1 transition-all";
-            });
-            const activeNavMap = { dashboard: 'dash', impact: 'imp', lounge: 'lng', admin: 'adm' };
-            const targetBtn = document.getElementById(`nav-${activeNavMap[viewName]}`);
-            if(targetBtn) targetBtn.className = "nav-btn text-primary border-b-2 border-primary py-1 font-bold";
-
-            // Mobile Tab Nav Highlight Link Swap
-            ['dash', 'imp', 'lng', 'adm'].forEach(m => {
-                const mobLink = document.getElementById(`mobile-nav-${m}`);
-                if (mobLink) {
-                    if (m === activeNavMap[viewName]) {
-                        mobLink.className = "flex flex-col items-center justify-center gap-1 text-primary scale-105 transition-all duration-150 font-bold";
-                    } else {
-                        mobLink.className = "flex flex-col items-center justify-center gap-1 text-on-surface-variant hover:text-primary transition-all duration-150";
-                    }
-                }
-            });
-
-            // Adjust Contextual FAB functionality based on current Active view
-            const fab = document.getElementById('fab-icon');
-            if (viewName === 'admin') {
-                fab.innerText = 'person_add';
+            const userNav = document.getElementById('user-nav');
+            if (screenId === 'screen-admin') {
+                userNav.style.display = 'none';
+                document.documentElement.classList.remove('dark');
             } else {
-                fab.innerText = 'add_comment';
+                userNav.style.display = 'flex';
+                document.documentElement.classList.add('dark');
+                // Update nav icons color
+                document.querySelectorAll('#user-nav button').forEach(btn => {
+                    btn.classList.remove('text-primary');
+                    btn.classList.add('text-on-surface-variant/60');
+                });
+                const activeBtnIndex = screenId === 'screen-home' ? 0 : 1;
+                document.querySelectorAll('#user-nav button')[activeBtnIndex].classList.add('text-primary');
+                document.querySelectorAll('#user-nav button')[activeBtnIndex].classList.remove('text-on-surface-variant/60');
             }
         }
 
-        // Switch Active Profile (김주리 / 김지수)
-        function switchProfile(profKey) {
-            state.currentProfile = profKey;
-            const data = profilesData[profKey];
-
-            // Global Element Data bindings
-            document.getElementById('header-avatar').src = data.avatar;
-            document.getElementById('dash-hero-bg').src = data.avatar;
-            document.getElementById('header-greeting').innerText = `나눔의 깊이를 실현하는 ${data.name}`;
-            document.getElementById('dash-username').innerText = `환영합니다, ${data.name}`;
-            document.getElementById('dash-join-date').innerText = data.joinDate;
-            document.getElementById('stat-score').innerText = data.score;
-            document.getElementById('stat-value').innerText = data.subVal;
-            document.getElementById('stat-sub-label').innerText = data.subLabel;
-            document.getElementById('badge-promo-text').innerText = data.promo;
-
-            // Render Dynamic Activity Card List
-            const logContainer = document.getElementById('activity-log-container');
-            logContainer.innerHTML = '';
-            data.activities.forEach(act => {
-                const actRow = `
-                    <div class="flex items-center justify-between p-4 bg-surface-container rounded-xl border-l-4 border-primary shadow-sm hover:translate-x-1 transition-all">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-primary text-xl">verified_user</span>
-                            <div>
-                                <p class="font-bold text-xs text-on-surface">${act.desc}</p>
-                                <p class="text-[10px] text-on-surface-variant">${act.type} 카테고리</p>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-bold text-on-surface-variant">${act.meta}</span>
-                    </div>
-                `;
-                logContainer.innerHTML += actRow;
-            });
-
-            showToast(`${data.name} 정보로 동기화 완료`);
-            closeDropdown();
-        }
-
-        // Toggle UI Dropdowns & Drawers
-        function toggleProfileDropdown() {
-            const dp = document.getElementById('profile-dropdown');
-            dp.classList.toggle('hidden');
-        }
-        function closeDropdown() {
-            document.getElementById('profile-dropdown').classList.add('hidden');
-        }
-        function toggleNotificationDrawer() {
-            document.getElementById('notif-drawer').classList.toggle('hidden');
-            document.getElementById('notif-dot').classList.add('hidden');
-        }
-
-        // Contextual FAB Button Trigger Router
-        function handleFabClick() {
-            if (state.currentView === 'admin') {
-                openAdminAddModal();
+        function toggleRSVP(isJoin) {
+            const btnOn = document.getElementById('btn-rsvp-on');
+            const btnOff = document.getElementById('btn-rsvp-off');
+            if(isJoin) {
+                btnOn.classList.add('text-primary', 'bg-primary/10', 'font-bold');
+                btnOff.classList.remove('text-primary', 'bg-primary/10', 'font-bold');
             } else {
-                openChat('Reforestation');
+                btnOff.classList.add('text-primary', 'bg-primary/10', 'font-bold');
+                btnOn.classList.remove('text-primary', 'bg-primary/10', 'font-bold');
             }
         }
 
-        // Live Chat Forum Core Engine
-        function openChat(topic) {
-            state.activeChatTopic = topic;
-            const chatTitle = topic === 'Reforestation' ? '아마존 생태 복원 이니셔티브' : '지속 가능한 컴팩트 도시 설계';
-            document.getElementById('chat-title').innerText = chatTitle;
-            document.getElementById('chat-modal').classList.remove('hidden');
-            renderChatLogs();
-        }
-        function closeChat() {
-            document.getElementById('chat-modal').classList.add('hidden');
-        }
-        function renderChatLogs() {
-            const logs = document.getElementById('chat-logs');
-            logs.innerHTML = '';
-            state.chatData[state.activeChatTopic].forEach(msg => {
-                const isMe = msg.sender === '나' || msg.sender.includes(profilesData[state.currentProfile].name);
-                const blockClass = isMe ? 'bg-primary text-on-primary self-end' : 'bg-surface-container-low text-on-surface';
-                const containerClass = isMe ? 'flex flex-col items-end' : 'flex flex-col items-start';
-                
-                logs.innerHTML += `
-                    <div class="${containerClass}">
-                        <span class="text-[10px] font-bold text-on-surface-variant mb-0.5">${msg.sender}</span>
-                        <div class="p-3 rounded-2xl max-w-[80%] ${blockClass} font-semibold">
-                            ${msg.msg}
-                        </div>
-                        <span class="text-[8px] text-on-surface-variant mt-0.5">${msg.time}</span>
-                    </div>
-                `;
-            });
-            logs.scrollTop = logs.scrollHeight;
-        }
-        function sendChatMessage(e) {
-            e.preventDefault();
-            const input = document.getElementById('chat-input');
-            if(!input.value.trim()) return;
-
-            const profile = profilesData[state.currentProfile];
-            state.chatData[state.activeChatTopic].push({
-                sender: profile.name,
-                msg: input.value.trim(),
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            });
-
-            input.value = '';
-            renderChatLogs();
+        function openModal() {
+            const modal = document.getElementById('modal-thankyou');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('div').classList.remove('scale-95');
         }
 
-        // Custom Scheduler Form Handlers
-        function openIntroModal() {
-            document.getElementById('intro-modal').classList.remove('hidden');
+        function closeModal() {
+            const modal = document.getElementById('modal-thankyou');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('div').classList.add('scale-95');
         }
-        function closeIntroModal() {
-            document.getElementById('intro-modal').classList.add('hidden');
-        }
-        function submitIntroRequest(e) {
-            e.preventDefault();
-            closeIntroModal();
-            showToast('1:1 파트너십 소개 인터뷰 예약이 원활하게 인가되었습니다.');
-        }
-
-        // Mock Action Alerts
-        function openConciergeBooking() {
-            showToast('컨시어지: 2026 연례 윈터 갈라 1열 VIP 예약석 인가 완료');
-        }
-        function downloadReport() {
-            showToast('상반기 통합 기부금 감사 리포트 다운로드 완료');
-        }
-        function joinSummitWaitlist() {
-            document.getElementById('summit-event-container').innerHTML = `
-                <div>
-                    <span class="bg-primary text-white text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-full uppercase">VIP 세미나</span>
-                    <h4 class="text-white font-bold text-lg mt-2">노블 리더십 서밋 2026</h4>
-                    <p class="text-white/60 text-xs mt-1">2026. 10. 05 | 대기 접수 완료</p>
-                </div>
-                <span class="text-gold-accent font-bold text-xs bg-black/40 px-3 py-2 rounded-lg">대기완료</span>
-            `;
-            showToast('대기 신청서가 VIP 의전 리스트에 접수되었습니다.');
-        }
-
-        // Admin Management Dashboard Handlers
-        function renderAdminTable() {
-            const body = document.getElementById('admin-table-body');
-            body.innerHTML = '';
-            state.adminUsers.forEach((user, idx) => {
-                let statusBadge = '';
-                if (user.status === '안정') statusBadge = '<span class="bg-primary/10 text-primary px-2.5 py-1 rounded-full font-bold">안정</span>';
-                else if (user.status === '후속 관리') statusBadge = '<span class="bg-gold-accent/10 text-gold-accent px-2.5 py-1 rounded-full font-bold">후속 관리</span>';
-                else statusBadge = '<span class="bg-red-500/10 text-error px-2.5 py-1 rounded-full font-bold">긴급</span>';
-
-                body.innerHTML += `
-                    <tr class="hover:bg-surface-container-low transition-colors">
-                        <td class="p-4 flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary font-bold flex items-center justify-center text-xs">
-                                ${user.name.charAt(0)}
-                            </div>
-                            <div>
-                                <p class="font-bold text-on-surface text-xs">${user.name}</p>
-                                <p class="text-[10px] text-on-surface-variant font-medium">${user.email}</p>
-                            </div>
-                        </td>
-                        <td class="p-4"><span class="bg-secondary/10 text-secondary font-bold px-2 py-1 rounded">${user.tier}</span></td>
-                        <td class="p-4 font-bold text-on-surface">₩${user.amount.toLocaleString()}</td>
-                        <td class="p-4">${statusBadge}</td>
-                        <td class="p-4 text-right">
-                            <button onclick="triggerDirectMail(${idx})" class="p-2 hover:bg-surface-container-high rounded-full transition-colors">
-                                <span class="material-symbols-outlined text-[16px] text-primary">mail</span>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-        function triggerDirectMail(idx) {
-            const user = state.adminUsers[idx];
-            showToast(`${user.name} 님께 다이렉트 프라이빗 메일 서신 발송 완료`);
-        }
-        function filterAdminTable() {
-            const q = document.getElementById('admin-search-input').value.toLowerCase();
-            const rows = document.getElementById('admin-table-body').getElementsByTagName('tr');
-            
-            for (let i = 0; i < rows.length; i++) {
-                const text = rows[i].textContent.toLowerCase();
-                if (text.includes(q)) {
-                    rows[i].classList.remove('hidden');
-                } else {
-                    rows[i].classList.add('hidden');
-                }
-            }
-        }
-        function openAdminAddModal() {
-            document.getElementById('admin-add-modal').classList.remove('hidden');
-        }
-        function closeAdminAddModal() {
-            document.getElementById('admin-add-modal').classList.add('hidden');
-        }
-        function submitNewDonor(e) {
-            e.preventDefault();
-            const name = document.getElementById('donor-name').value;
-            const email = document.getElementById('donor-email').value;
-            const tier = document.getElementById('donor-tier').value;
-            const amount = parseFloat(document.getElementById('donor-amount').value);
-
-            state.adminUsers.push({ name, email, tier, amount, status: '안정', message: '대기 중' });
-            
-            closeAdminAddModal();
-            renderAdminTable();
-            showToast(`${name} 님이 안전하게 우선 관리 명단에 추가되었습니다.`);
-
-            // Reset input values
-            document.getElementById('donor-name').value = '';
-            document.getElementById('donor-email').value = '';
-            document.getElementById('donor-amount').value = '';
-        }
-        function showAdminNotification(message) {
-            showToast(message);
-        }
-
-        // Global User Interface Helpers
-        function showToast(msg) {
-            const toast = document.getElementById('toast-message');
-            toast.innerText = msg;
-            toast.classList.remove('hidden');
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
-        }
-
-        // Document Initialize
-        window.onload = function() {
-            switchProfile('juri');
-            renderAdminTable();
-        };
     </script>
 </body>
 </html>
